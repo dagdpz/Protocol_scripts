@@ -1,6 +1,6 @@
 function [mastertable,out_comp]=DAG_protocol_from_trials(monkey,dates, mastertable, reward_voltage)
 % [mastertable,out_comp]=get_protocol_from_trials('L','Linus',[20150427 20150427])
-dag_drive_IP=get_dag_drive_IP;
+dag_drive_IP=DAG_get_server_IP;
 % monkey='Cornelius';
 % dates=[20140218 20140218];
 
@@ -13,7 +13,7 @@ CalibrationInfo=DAG_get_reward_calibration_info;
 clean_data=1;
 folder_with_session_days=strcat(dag_drive_IP, 'Data', filesep, monkey);
 
-[~, file_as_i_want_it_cell] = arrange_trials(monkey,folder_with_session_days, dates);
+[~, file_as_i_want_it_cell] = DAG_arrange_trials(monkey,folder_with_session_days, dates);
 if isempty(file_as_i_want_it_cell)
     return;
 end
@@ -213,7 +213,7 @@ for k=1:numel(mastertable)
     end
 end
 
-[~, protocol_xls_file, current_folder]= most_recent_version(protocol_folder,[monkey '_protocol.xls']);
+[~, protocol_xls_file, current_folder]= DAG_most_recent_version(protocol_folder,[monkey '_protocol.xls']);
 %% change code below using [dag_drive_IP, 'Protocols' filesep monkey] for the excel table
 if isempty(protocol_xls_file)
     old_mastertable=mastertable_xls(1,:);
@@ -223,7 +223,7 @@ if isempty(protocol_xls_file)
     numindex=NaN(size(logidx));
 else
     [data_old,~,old_mastertable]=xlsread([current_folder filesep protocol_xls_file],'Runs');
-    [logidx,numindex]=find_row_indexes_log([mastertable_xls{2:end,1}],data_old);
+    [logidx,numindex]=DAG_find_row_indexes_logicals([mastertable_xls{2:end,1}],data_old);
 end
 
 
@@ -253,7 +253,7 @@ for idx=1:numel(logidx)
        end
    end
 end
-complete_mastertable=update_mastertable_cell(old_mastertable2,mastertable_xls2,rows_to_update);
+complete_mastertable=DAG_update_mastertable_cell(old_mastertable2,mastertable_xls2,rows_to_update);
 
 for k=1:size(complete_mastertable,1)-1
     for h=1:size(complete_mastertable,2)
@@ -274,14 +274,14 @@ loop_N=ceil(size(complete_mastertable,1)/chunksize);
 for k=1:loop_N
     startrowidx=1+(k-1)*chunksize;
     endrowidx=min(k*chunksize,size(complete_mastertable,1));
-    xls_index_range=['A' num2str(1+(k-1)*chunksize) ':' index_to_xls_column(endrowidx,size(complete_mastertable,2))];
+    xls_index_range=['A' num2str(1+(k-1)*chunksize) ':' DAG_index_to_xls_column(endrowidx,size(complete_mastertable,2))];
     
     xlswrite([current_folder filesep monkey '_protocol.xls'],complete_mastertable(startrowidx:endrowidx,:),'Runs',xls_index_range);
     xlswrite([current_folder filesep monkey '_protocol.xls'],complete_mastertable(startrowidx:endrowidx,:),'Mastertable',xls_index_range);
 end
 
-xlscolor([current_folder filesep monkey '_protocol.xls'],complete_mastertable, false(size(change_matrix)));
-xlscolor([current_folder filesep monkey '_protocol.xls'],complete_mastertable, change_matrix);
+DAG_xlscolor([current_folder filesep monkey '_protocol.xls'],complete_mastertable, false(size(change_matrix)));
+DAG_xlscolor([current_folder filesep monkey '_protocol.xls'],complete_mastertable, change_matrix);
 
 % if ~isdir([current_folder filesep monkey]); mkdir(current_folder,monkey); end
 %save([current_folder filesep monkey, '_prot_',num2str(dates(1)), '-', num2str(dates(2))],'mastertable')
@@ -294,7 +294,7 @@ per_task_sheets([current_folder filesep monkey '_protocol.xls']);
 % save(strcat(monkey, '_trialinfo_mastertable_',current_date),'mastertable')
 end
 
-function [logidx,numindex]=find_row_indexes_log(array_to_look_for,input_array)
+function [logidx,numindex]=DAG_find_row_indexes_logicals(array_to_look_for,input_array)
 current_date=0;
 current_date_counter=0;
 for k=1:length(array_to_look_for)
@@ -326,7 +326,7 @@ function summarize_evaluation(protocol_xls_file)
 
 for title_idx=1:size(mastertable,2)
    title= mastertable{1,title_idx};
-   idx.(title)=find_column_index(mastertable(1,:),title);
+   idx.(title)=DAG_find_column_index(mastertable(1,:),title);
 end
 
 
@@ -387,7 +387,7 @@ function per_task_sheets(protocol_xls_file)
 
 for title_idx=1:size(mastertable,2)
    title= mastertable{1,title_idx};
-   idx.(title)=find_column_index(mastertable(1,:),title);
+   idx.(title)=DAG_find_column_index(mastertable(1,:),title);
 end
 a=1;
 type_effector=[data(:,idx.Type),data(:,idx.Effector)];

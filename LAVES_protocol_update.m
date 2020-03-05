@@ -39,20 +39,20 @@ all_dates = dates_from_range(dates, 'yyyyMMdd', 'yyyyMMdd', 'type_double');
 
 % For each date, search for the data in the excel sheet
 % find the column indeces of the column in data_cell
-column_idx_sessions  = find_column_index(data_cell,column_session);
-column_idx_start_chair_time  = find_column_index(data_cell,column_start_chair_time);
-column_idx_end_chair_time  = find_column_index(data_cell,column_end_chair_time);
-column_idx_method  = find_column_index(data_cell,column_method);
-column_idx_method_comment  = find_column_index(data_cell,column_method_comment);
-column_idx_fluid_reward  = find_column_index(data_cell,column_fluid_reward);
-column_idx_fluid_reward_code = find_column_index(data_cell,column_fluid_reward_code);
-column_idx_non_fluid_reward  = find_column_index(data_cell,column_non_fluid_reward);
-column_idx_additional_fluid  = find_column_index(data_cell,column_additional_fluid);
-column_idx_additional_non_fluid  = find_column_index(data_cell,column_additional_non_fluid);
-column_idx_weight  = find_column_index(data_cell,column_weight);
-column_idx_aim  = find_column_index(data_cell,column_aim);
-column_idx_daily_trials  = find_column_index(data_cell,column_daily_trials);
-column_idx_hitrate  = find_column_index(data_cell,column_hitrate);
+column_idx_sessions  = DAG_find_column_index(data_cell,column_session);
+column_idx_start_chair_time  = DAG_find_column_index(data_cell,column_start_chair_time);
+column_idx_end_chair_time  = DAG_find_column_index(data_cell,column_end_chair_time);
+column_idx_method  = DAG_find_column_index(data_cell,column_method);
+column_idx_method_comment  = DAG_find_column_index(data_cell,column_method_comment);
+column_idx_fluid_reward  = DAG_find_column_index(data_cell,column_fluid_reward);
+column_idx_fluid_reward_code = DAG_find_column_index(data_cell,column_fluid_reward_code);
+column_idx_non_fluid_reward  = DAG_find_column_index(data_cell,column_non_fluid_reward);
+column_idx_additional_fluid  = DAG_find_column_index(data_cell,column_additional_fluid);
+column_idx_additional_non_fluid  = DAG_find_column_index(data_cell,column_additional_non_fluid);
+column_idx_weight  = DAG_find_column_index(data_cell,column_weight);
+column_idx_aim  = DAG_find_column_index(data_cell,column_aim);
+column_idx_daily_trials  = DAG_find_column_index(data_cell,column_daily_trials);
+column_idx_hitrate  = DAG_find_column_index(data_cell,column_hitrate);
 
 monkey_upper_case = monkey(1:3);
 monkey_lower_case = lower(monkey_upper_case);
@@ -65,11 +65,11 @@ for dat = 1:numel(all_dates)
     
     % find row index of current session in data_cell
     session_column = {data_cell{:,column_idx_sessions}}';
-    row_idx = find_row_index(session_column,session);
+    row_idx = DAG_find_row_index(session_column,session);
     
     % find row index of previous day in data_cell
     prev_day = str2num(datestr(session_dt-1,'yyyymmdd')); %,'InputFormat','yyyyMMdd'
-    row_idx_prev_day = find_row_index(session_column,prev_day);
+    row_idx_prev_day = DAG_find_row_index(session_column,prev_day);
     
     if isempty(row_idx_prev_day)
         no_session_on_prev_day = true;
@@ -251,8 +251,8 @@ disp('Done! :)')
 % % fprintf(fileID, formatSpec, str);
 % del = '\t';
 % A = fprintf(['a' del 'b']);
-% find_column_index
-% update_mastertable_cell
+% DAG_find_column_index
+% DAG_update_mastertable_cell
 end
 
 %% Subfunctions
@@ -304,7 +304,7 @@ switch output_type
 end
 end
 
-function column_index=find_column_index(inputcell,title)
+function column_index=DAG_find_column_index(inputcell,title)
 column_index=[];
 for m=1:size(inputcell,2)
     if strcmp(inputcell{1,m},title)
@@ -313,7 +313,7 @@ for m=1:size(inputcell,2)
 end
 end
 
-function row_index=find_row_index(inputcell,title)
+function row_index=DAG_find_row_index(inputcell,title)
 row_index=[];
 if ischar(title) % search for a string
 for m=1:size(inputcell,1)

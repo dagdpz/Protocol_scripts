@@ -2,7 +2,7 @@ function a = DAG_clean_protocol(monkey,dates)
 a=[];
 monkey='Cornelius';
 dates=[20130901 20160226];
-drive=get_dag_drive_IP;
+drive=DAG_get_server_IP;
 switch monkey
     case 'Linus'
         data_path= strcat(drive,':', filesep,'Data', filesep, monkey, '_microstim_with_parameters', filesep);

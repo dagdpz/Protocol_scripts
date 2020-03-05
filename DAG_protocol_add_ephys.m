@@ -1,9 +1,9 @@
 function DAG_protocol_add_ephys(monkey)
 %monkey='Linus_phys';
 
-dag_drive_IP=get_dag_drive_IP;
+dag_drive_IP=DAG_get_server_IP;
 protocol_folder=[dag_drive_IP, 'Protocols' filesep monkey];
-protocol_xls_file= most_recent_version(protocol_folder,[monkey '_protocol.xls']);
+protocol_xls_file= DAG_most_recent_version(protocol_folder,[monkey '_protocol.xls']);
 
 [~, ~, protocol_runs_table]=xlsread(protocol_xls_file,'Runs');
 [~, ~, protocol_sessions_table]=xlsread(protocol_xls_file,'Sessions');
@@ -18,11 +18,11 @@ else
     sorting_table={'Monkey','Session','Date','Run','Block','Chan','z','Unit','N_spk','Neuron_ID','Times_same_unit','Site_ID'};
 end
 
-sort_session_idx=find_column_index(sorting_table,'Date');
-sort_run_idx=find_column_index(sorting_table,'Run');
-sort_neuron_idx=find_column_index(sorting_table,'Neuron_ID');
-sort_site_idx=find_column_index(sorting_table,'Site_ID');
-sort_target_idx=find_column_index(sorting_table,'Target');
+sort_session_idx=DAG_find_column_index(sorting_table,'Date');
+sort_run_idx=DAG_find_column_index(sorting_table,'Run');
+sort_neuron_idx=DAG_find_column_index(sorting_table,'Neuron_ID');
+sort_site_idx=DAG_find_column_index(sorting_table,'Site_ID');
+sort_target_idx=DAG_find_column_index(sorting_table,'Target');
 
 for x=1:size(protocol_runs_table,2)
 fname=strrep(protocol_runs_table{1,x},' ','_');
@@ -74,8 +74,8 @@ for x=1:size(sort_table_extension,2)
 end
 
 %Adjusting in order to have it the way we want
-    idx_1=find_column_index(sort_table_extension,'choice_fraction');sort_table_extension{1,idx_1}='choices_present';
-    idx_2=find_column_index(sort_table_extension,'demanded_hand_fraction');sort_table_extension{1,idx_2}='hands_interleaved';
+    idx_1=DAG_find_column_index(sort_table_extension,'choice_fraction');sort_table_extension{1,idx_1}='choices_present';
+    idx_2=DAG_find_column_index(sort_table_extension,'demanded_hand_fraction');sort_table_extension{1,idx_2}='hands_interleaved';
 for x=2:size(sort_table_extension,1)
     sort_table_extension{x,idx_1}=double(any(sort_table_extension{x,idx_1}));
     temp_hands=str2num(sort_table_extension{x,idx_2});
